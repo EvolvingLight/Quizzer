@@ -1,6 +1,10 @@
 package quizlogic;
 
-public class FakeDataTest {
+import java.io.Serializable;
+
+public class FakeDataTest implements Serializable {
+	
+	protected static final long serialVersionUID = 1L;
 
 	public static void main(String[] args) {
 

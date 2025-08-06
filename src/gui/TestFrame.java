@@ -11,7 +11,7 @@ public class TestFrame extends JFrame {
 		setBounds(600, 100, 720, 480);
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		
-		add(new QuestionMainPanel());
+		add(new QuestionTabMainPanel());
 		
 		setVisible(true);
 	}

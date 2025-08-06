@@ -1,9 +1,12 @@
 package quizlogic;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Random;
 
-public class FakeDataDeliverer {
+public class FakeDataDeliverer implements Serializable {
+	
+	protected static final long serialVersionUID = 1L;
 
 	public ArrayList<Thema> themes;
 	public ArrayList<Question> questions;
@@ -30,6 +33,10 @@ public class FakeDataDeliverer {
 		return que;
 	}
 	
+	public void getQuestionFromList(int index) {
+		
+	}
+	
 
 	public void createThemes(int count) {
 
@@ -46,10 +53,6 @@ public class FakeDataDeliverer {
 			themes.add(th);
 		}
 	}
-
-//	public ArrayList<Thema> getSubjectList() {
-//		return themes;
-//	}
 	
 	public void createQuestionsFor(Thema th) {
 		
