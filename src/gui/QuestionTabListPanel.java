@@ -6,6 +6,7 @@ import java.awt.Insets;
 import java.util.ArrayList;
 
 import javax.swing.DefaultListModel;
+import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JList;
@@ -14,8 +15,8 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
 import layout.QPanel;
-import quizlogic.Question;
-import quizlogic.Thema;
+import quizlogic.serialization.Question;
+import quizlogic.serialization.Thema;
 
 /**
  * A panel that displays a list of questions grouped by theme. This component
@@ -27,15 +28,16 @@ import quizlogic.Thema;
  */
 public class QuestionTabListPanel extends QPanel {
 
-	private JLabel subjectHeader;
+	private JLabel themeHeader;
 	private JList<String> questionList;
 	private JComboBox<String> box;
 	private DefaultListModel<String> model;
 
 	private ArrayList<Thema> themeDataList;
 	private ArrayList<Question> questionDataList;
-	private int ListSelectionModel;
 	private int row;
+	
+	private JButton showThemeBtn;
 
 	/**
 	 * Constructs a new QuestionListPanel with the given theme and question data.
@@ -69,9 +71,10 @@ public class QuestionTabListPanel extends QPanel {
      * - A list model for dynamic question list updates
 	 */
 	private void initComponents() {
-		subjectHeader = new JLabel();
+		themeHeader = new JLabel();
 		box = new JComboBox<String>();
 		model = new DefaultListModel<>();
+		showThemeBtn = new JButton();
 	}
 
 	/**
@@ -84,18 +87,17 @@ public class QuestionTabListPanel extends QPanel {
 	private void addComponents() {
 		row = 0;
 		gbc.fill = GridBagConstraints.HORIZONTAL;
-		gbc.anchor = GridBagConstraints.NORTHWEST;
 		gbc.weightx = 1.0;
 //		gbc.weighty = 0.0;
 		gbc.insets = new Insets(15, 5, 15, 5);
 
-		// Row 1. Header
+		// Row 1. Header (label, button)
 		addHeader();
 
-		// Row 2. Theme-list in combo box
+		// Row 2. Theme-list (combo box)
 		addComboBox();
 
-		// Row 3+ Questions in scroll pane
+		// Row 3+ Questions (scroll pane)
 		addScrollPane();
 	}
 
@@ -103,8 +105,12 @@ public class QuestionTabListPanel extends QPanel {
 	 * Adds header text in the specified row
 	 */
 	private void addHeader() {
-		addComponent(subjectHeader, row, 0);
-		subjectHeader.setText("Fragen zum Thema");
+		themeHeader.setText("Fragen zum Thema");
+		addComponent(themeHeader, row, 0);
+		
+		showThemeBtn.setText("Thema anzeigen");
+		addComponent(showThemeBtn, row, 1);
+		showThemeBtn.setVisible(false);							// Button not visible, as long as no entry is selected
 		row++;
 	}
 
@@ -140,6 +146,7 @@ public class QuestionTabListPanel extends QPanel {
 
 		/**
 		 * Action listener to check which entry is selected
+		 * TODO: Check for function when data is available
 		 */
 		gbc.gridheight = 3; // List height => X row high
 		questionList = new JList<String>(model);
@@ -154,6 +161,8 @@ public class QuestionTabListPanel extends QPanel {
 					// fdd.q = question[selectedIndex];
 					String test = questionList.getName();
 					System.out.println(test);
+					
+					showThemeBtn.setVisible(true);				// Button visible as an entry is selected
 				}
 
 			}
@@ -167,11 +176,10 @@ public class QuestionTabListPanel extends QPanel {
 
 		int verticalPolicy = JScrollPane.VERTICAL_SCROLLBAR_ALWAYS;
 		scrollPane.setVerticalScrollBarPolicy(verticalPolicy);
-//		scrollPane.setPreferredSize(new Dimension(0, super.getPreferredSize().height));
 
 		addComponent(scrollPane, row, 0);
 
-		gbc.gridheight = 1; 						// Back to standard => 1 row high
+		gbc.gridheight = 1; 									// Back to standard => 1 row high
 	}
 
 }

@@ -1,7 +1,6 @@
 package gui;
 
 import java.awt.Dimension;
-import java.awt.GridBagConstraints;
 import java.util.ArrayList;
 
 import javax.swing.JCheckBox;
@@ -11,7 +10,7 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
 import layout.QPanel;
-import quizlogic.Question;
+import quizlogic.serialization.Question;
 
 /**
  * This class builds the view of the questionPanel
@@ -106,7 +105,7 @@ public class QuestionTabQuestionPanel extends QPanel {
 	/**
 	 * Initializes the components
 	 */
-	void initComponents() {
+	private void initComponents() {
 		themeLabel = new JLabel("Thema");
 		themeLabelText = new JLabel();
 		msgLabel = new JLabel();
@@ -157,8 +156,8 @@ public class QuestionTabQuestionPanel extends QPanel {
 	 * one with the value of the current selected question
 	 */
 	private void addQuestionTheme() {
-		gbc.anchor = GridBagConstraints.SOUTH;
 		addComponent(themeLabel, row, 0);
+		
 		themeLabelText.setMinimumSize(new Dimension(200, 22));
 		addComponent(themeLabelText, row, 1);
 		addBoxOrEmpty(row, 1);
@@ -223,7 +222,6 @@ public class QuestionTabQuestionPanel extends QPanel {
 	 * Adds the message panel
 	 */
 	private void addMsgPanel() {
-		gbc.anchor = GridBagConstraints.EAST;
 		gbc.gridwidth = 2;											// Message panel 2 columns wide
 		msgLabel.setText("Hier Könnte ihre Werbung stehen!");
 		addComponent(msgLabel, row, 0);

@@ -1,7 +1,6 @@
 package gui;
 
 import java.awt.Color;
-import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 
 import javax.swing.BorderFactory;
@@ -45,7 +44,7 @@ public class QuestionTabMainPanel extends QPanel implements ButtonPanelDelegate 
 	/**
 	 * New Instance of QuizDataManager to manage the functionalities of this class
 	 */
-	QuizDataManager fdd = new QuizDataManager();
+	public QuizDataManager fdd = new QuizDataManager();
 
 	/**
 	 * Panel used to test the functionality of the first button. TODO: Delete after
@@ -138,15 +137,13 @@ public class QuestionTabMainPanel extends QPanel implements ButtonPanelDelegate 
 
 		// ------ Row 1 ------ //
 		// Panel three => quesitonTabButtonPanel
-//		gbc.fill = GridBagConstraints.HORIZONTAL;
-//		gbc.gridwidth = 2;
-//		gbc.weightx = 1.0;
+		gbc.gridwidth = 2;
 		bottomPanel.setBorder(BorderFactory.createLineBorder(Color.orange));
 		addComponent(bottomPanel, row, 0);
+		
 		// Reset to standard
 		gbc.gridwidth = 1;
-		gbc.weightx = 0.0;
-		gbc.fill = GridBagConstraints.NONE;
+
 	}
 
 	/**

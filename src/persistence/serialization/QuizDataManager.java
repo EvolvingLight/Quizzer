@@ -9,9 +9,9 @@ import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 
 import persistence.QuizDataInterface;
-import quizlogic.Answer;
-import quizlogic.Question;
-import quizlogic.Thema;
+import quizlogic.serialization.Answer;
+import quizlogic.serialization.Question;
+import quizlogic.serialization.Thema;
 
 /**
  * This class manages different methods like save or delete operations used via the QuizDataInterface

@@ -7,6 +7,8 @@ import javax.swing.BorderFactory;
 
 import layout.QPanel;
 import persistence.serialization.QuizDataManager;
+import quizlogic.BLManager;
+import quizlogic.ThemeDTO;
 
 /**
  * Main panel for the question tab in the quiz application.
@@ -19,7 +21,7 @@ import persistence.serialization.QuizDataManager;
 	 * The panel implements {@link ButtonPanelDelegate} to respond to button clicks,
 	 * dynamically switching content in the right panel
  */
-public class QuizTabMainPanel extends QPanel implements ButtonPanelDelegate {
+public class ThemeTabMainPanel extends QPanel implements ButtonPanelDelegate {
 	
 	/**
 	 * General serial version UID for serialization compatibility
@@ -29,22 +31,17 @@ public class QuizTabMainPanel extends QPanel implements ButtonPanelDelegate {
 	/**
 	 * Part of the view from the theme tab
 	 */
-	private QuizTabQuestionPanel quizTabQuestionPanel;
+	private ThemeTabThemePanel themeTabThemePanel;
 
 	/**
 	 * Part of the view from the theme tab
 	 */
-	private QuizTabQuestionListPanel quizTabQuestionListPanel;
+	private ThemeTabThemeListPanel themeTabThemeListPanel;
 
 	/**
 	 * Part of the view from the theme tab
 	 */
-	private QuizTabButtonPanel quizTabButtonPanel;
-
-	/**
-	 * New Instance of QuizDataManager to manage the functionalities of this class
-	 */
-	QuizDataManager fdd = new QuizDataManager();
+	private ThemeTabButtonPanel themeTabButtonPanel;
 
 	/**
 	 * Container for the panel to be added to the left side of the view
@@ -60,13 +57,23 @@ public class QuizTabMainPanel extends QPanel implements ButtonPanelDelegate {
 	 * Container for the panel to be added to the bottom of the view
 	 */
 	private QPanel bottomPanel;
+
+	/**
+	 * New Instance of QuizDataManager to manage the functionalities of this class
+	 */
+	QuizDataManager fdd = new QuizDataManager();
+	
+	/**
+	 * New instance of the business logic manager to manage data transfer to the business logic
+	 */
+	private BLManager mng = new BLManager();
 	
 	/**
 	 * Constructs a new ThemeMainPanel.
      * Initializes the layout, creates all required sub-panels, configures their placement,
      * and adds them to the container. The panel is ready for display upon construction.
 	 */
-	public QuizTabMainPanel() {
+	public ThemeTabMainPanel() {
 		super();
 		setLayout();
 		initPanels();
@@ -95,9 +102,9 @@ public class QuizTabMainPanel extends QPanel implements ButtonPanelDelegate {
 		rightPanel = new QPanel();
 		bottomPanel = new QPanel();
 
-		quizTabQuestionPanel = new QuizTabQuestionPanel(fdd.getRandomQuestion());
-		quizTabQuestionListPanel = new QuizTabQuestionListPanel(fdd.getAllThemes(), fdd.getQuestionFor(null));
-		quizTabButtonPanel = new QuizTabButtonPanel(this);
+		themeTabThemePanel = new ThemeTabThemePanel();
+		themeTabThemeListPanel = new ThemeTabThemeListPanel();
+		themeTabButtonPanel = new ThemeTabButtonPanel(this);
 	}
 
 	/**
@@ -138,13 +145,13 @@ public class QuizTabMainPanel extends QPanel implements ButtonPanelDelegate {
 	 */
 	private void addPanels() {
 		// Panel one => questionTabquestionPanel
-		leftPanel.add(quizTabQuestionPanel);
+		leftPanel.add(themeTabThemePanel);
 
 		// Panel two => questionTabquestionListPanel
-		rightPanel.add(quizTabQuestionListPanel);
+		rightPanel.add(themeTabThemeListPanel);
 
 		// Panel three => quesitonTabButtonPanel
-		bottomPanel.add(quizTabButtonPanel);
+		bottomPanel.add(themeTabButtonPanel);
 	}
 
 	/**
@@ -167,7 +174,7 @@ public class QuizTabMainPanel extends QPanel implements ButtonPanelDelegate {
 	@Override
 	public void secondBtnWasClicked() {
 		System.out.println("second button clicked");
-
+		transferToBL();
 	}
 
 	/**
@@ -179,6 +186,20 @@ public class QuizTabMainPanel extends QPanel implements ButtonPanelDelegate {
 	public void thirdBtnWasClicked() {
 		System.out.println("third button clicked");
 
+	}
+	
+	/**
+	 * Reads input fields and instantiates a DTO object containing the input data
+	 */
+	public void transferToBL() {
+		ThemeDTO dto = new ThemeDTO();
+		
+		dto.setTitle(themeTabThemePanel.themeTitleTextField.getText());
+		dto.setText(themeTabThemePanel.themeTextArea.getText());
+		System.out.println("Vorher: " + dto.getInfo());
+		mng.saveTheme(dto);
+		System.out.println(dto.getInfo());
+		
 	}
 
 }

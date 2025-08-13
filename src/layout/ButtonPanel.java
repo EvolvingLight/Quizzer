@@ -31,6 +31,11 @@ public class ButtonPanel extends QPanel {
 	 * Declaration of third button
 	 */
 	public JButton thirdBtn;
+	
+	/**
+	 * Special constraints for buttons
+	 */
+	public GridBagConstraints gbcBtn; 
 
 	/**
 	 * Constructs a new ButtonPanel with the specified delegate for handling user interactions.
@@ -52,6 +57,8 @@ public class ButtonPanel extends QPanel {
 	 * The actions are defined in the QuizDataManager via the QuizDataInterface
 	 */
 	private void initComponents() {
+		gbcBtn = new GridBagConstraints();
+		
 		firstBtn = new JButton();
 		secondBtn = new JButton();
 		thirdBtn = new JButton();
@@ -69,14 +76,14 @@ public class ButtonPanel extends QPanel {
 	private void addComponents() {
 		int row = 0;
 		// Row 1. Buttons
-		gbc.fill = GridBagConstraints.NONE;
-		gbc.anchor = GridBagConstraints.WEST;
+		gbcBtn.fill = GridBagConstraints.NONE;
+		gbcBtn.anchor = GridBagConstraints.EAST;
 
 		addComponent(firstBtn, row, 0);
 		addComponent(secondBtn, row, 1);
 
-		gbc.anchor = GridBagConstraints.EAST;
-		gbc.insets = new Insets(0, 0, 0, 50);
+		gbcBtn.anchor = GridBagConstraints.WEST;
+		gbcBtn.insets = new Insets(0, 0, 0, 50);
 		addComponent(thirdBtn, row, 2);
 	}
 

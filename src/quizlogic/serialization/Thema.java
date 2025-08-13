@@ -1,4 +1,4 @@
-package quizlogic;
+package quizlogic.serialization;
 
 import java.io.Serializable;
 import java.util.ArrayList;

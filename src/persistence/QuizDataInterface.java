@@ -2,9 +2,9 @@ package persistence;
 
 import java.util.ArrayList;
 
-import quizlogic.Answer;
-import quizlogic.Question;
-import quizlogic.Thema;
+import quizlogic.serialization.Answer;
+import quizlogic.serialization.Question;
+import quizlogic.serialization.Thema;
 
 /**
  * This interface represents several methods uses inside the project to handle data

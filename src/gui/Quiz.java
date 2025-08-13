@@ -38,13 +38,17 @@ public class Quiz extends JFrame {
 		
 		TabPane tabPanel = new TabPane();
 		
-		QuizTabMainPanel quizTabMainPanel = new QuizTabMainPanel();
-		tabPanel.addTab("Quizthemen", quizTabMainPanel);
+		ThemeTabMainPanel themeTabMainPanel = new ThemeTabMainPanel();
+		tabPanel.addTab("Quizthemen", themeTabMainPanel);
 		add(tabPanel);
 		
 		QuestionTabMainPanel questionTabMainPanel= new QuestionTabMainPanel(); 
 		tabPanel.addTab("Quizfragen", questionTabMainPanel);
 		add(tabPanel);
+		
+//		QuizTabMainPanel quizTabMainPanel = new QuizTabMainPanel();
+//		tabPanel.addTab("Quiz", quizTabMainPanel);
+//		add(tabPanel);
 		
 		setResizable(false);
 		setVisible(true);
@@ -62,4 +66,20 @@ public class Quiz extends JFrame {
 
 	}
 
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 }
