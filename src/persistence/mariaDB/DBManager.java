@@ -11,12 +11,20 @@ import quizlogic.ThemeDTO;
 public class DBManager {
 
 	private Connection connection;
-	private int id;
-	private String themeTitle;
-	private String themeText;
-	
+
+	/**
+	 * 
+	 */
 	static String URL = "jdbc:mysql://localhost:3306/quizzer";
+
+	/**
+	 * 
+	 */
 	static String USER = "root";
+
+	/**
+	 * 
+	 */
 	static String PASSWORD = "";
 
 	/**
@@ -31,30 +39,39 @@ public class DBManager {
 	}
 
 	/**
-	 * Uses prepared SQL statements and the insertValues method to save / or update data in the DB
-	 * If the save process was not successful an error message will be displayed
-	 * @param th
-	 * @return
+	 * Uses prepared SQL statements and the insertValues method to save or update a
+	 * theme in the DB
+	 * 
+	 * @param th Instance of ThemeDTO
+	 * @return An error message if the save process was not successful
 	 */
 	public String saveThemeIntoDB(ThemeDTO th) {
-		String sqlInsert = ThemeDAO.SQL_INSERT_THEME;
-		String sqlUpdate = ThemeDAO.SQL_UPDATE_THEME;
+		int id = th.getId();
+
+		String sqlStmt;
+
+		if (id < 0) {
+			sqlStmt = ThemeDAO.SQL_INSERT_THEME;
+		} else {
+			sqlStmt = ThemeDAO.SQL_UPDATE_THEME;
+		}
 
 		establishConnection();
 
 		if (id == 0) {
-			try (PreparedStatement pstmt = connection.prepareStatement(sqlInsert)) {
-				insertValues(pstmt);
+			try (PreparedStatement pstmt = connection.prepareStatement(sqlStmt)) {
+				pstmt.setString(1, th.getTitle());
+				pstmt.setString(2, th.getText());
 				pstmt.executeUpdate();
 
 				// Return generated ID
 				try (ResultSet res = pstmt.getGeneratedKeys()) {
 					if (res.next()) {
-						id = res.getInt(1);
+						th.setId(res.getInt(1));
 					}
 				}
 				connection.close();
-				
+
 			} catch (SQLException e) {
 				System.out.println("Fehler beim Speichern in die Datenbank: " + e.getMessage());
 				e.printStackTrace();
@@ -63,31 +80,23 @@ public class DBManager {
 
 		} else {
 			System.out.println("Id already used!");
-			
-			try (PreparedStatement pstmt = connection.prepareStatement(sqlUpdate)) {
-				insertValues(pstmt);
+
+			try (PreparedStatement pstmt = connection.prepareStatement(sqlStmt)) {
+				pstmt.setString(1, th.getTitle());
+				pstmt.setString(2, th.getText());
+				
 				pstmt.executeUpdate();
 				connection.close();
-				
+
 			} catch (SQLException e) {
 				System.out.println("Fehler beim Speichern in die Datenbank: " + e.getMessage());
 				e.printStackTrace();
 				return e.getMessage();
 			}
 		}
-		
+
 		return null;
 	}
 
-	/**
-	 * Inserts themeTitle and themeText to the correct position in the SQL statement
-	 * inside the ThemeDAO class. Swaps the question marks with the values in this method.
-	 * The first question mark will be "themeTitle" and the second "themeText"
-	 * @param pstmt
-	 * @throws SQLException
-	 */
-	private void insertValues(PreparedStatement pstmt) throws SQLException {
-		pstmt.setString(1, themeTitle);
-		pstmt.setString(2, themeText);
-	}
+
 }

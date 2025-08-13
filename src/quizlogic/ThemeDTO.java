@@ -16,6 +16,21 @@ public class ThemeDTO {
 
 	/**
 	 * 
+	 */
+	static String URL = "jdbc:mysql://localhost:3306/quizzer";
+	
+	/**
+	 * 
+	 */
+	static String USER = "root";
+	
+	/**
+	 * 
+	 */
+	static String PASSWORD = "";
+	
+	/**
+	 * 
 	 * @return theme id
 	 */
 	public int getId() {
