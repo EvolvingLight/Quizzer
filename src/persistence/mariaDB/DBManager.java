@@ -13,22 +13,23 @@ public class DBManager {
 	private Connection connection;
 
 	/**
-	 * 
+	 * Address of the database
 	 */
 	static String URL = "jdbc:mysql://localhost:3306/quizzer";
 
 	/**
-	 * 
+	 * Login user name for the database
 	 */
 	static String USER = "root";
 
 	/**
-	 * 
+	 * Password for the database
 	 */
 	static String PASSWORD = "";
 
 	/**
 	 * Establishes a connection to the database
+	 * If no connection can be established an error message will be displayed in the console
 	 */
 	private void establishConnection() {
 		try {
@@ -57,46 +58,70 @@ public class DBManager {
 		}
 
 		establishConnection();
-
+		
+		PreparedStatement pstmt;
+		try {
+			pstmt = connection.prepareStatement(sqlStmt);
+			pstmt.setString(1, th.getTitle());
+			pstmt.setString(2, th.getText());
+			pstmt.executeUpdate();
+			connection.close();
+			
+		} catch (SQLException e) {
+			System.out.println("Fehler beim Speichern in die Datenbank: " + e.getMessage());
+			e.printStackTrace();
+			return e.getMessage();
+		}
+		
 		if (id == 0) {
-			try (PreparedStatement pstmt = connection.prepareStatement(sqlStmt)) {
-				pstmt.setString(1, th.getTitle());
-				pstmt.setString(2, th.getText());
-				pstmt.executeUpdate();
-
-				// Return generated ID
-				try (ResultSet res = pstmt.getGeneratedKeys()) {
-					if (res.next()) {
-						th.setId(res.getInt(1));
-					}
+			 // Return generated ID
+			try (ResultSet res = pstmt.getGeneratedKeys()) {
+				if (res.next()) {
+					th.setId(res.getInt(1));
 				}
 				connection.close();
-
 			} catch (SQLException e) {
 				System.out.println("Fehler beim Speichern in die Datenbank: " + e.getMessage());
 				e.printStackTrace();
 				return e.getMessage();
 			}
-
+			
 		} else {
+			try {
 			System.out.println("Id already used!");
-
-			try (PreparedStatement pstmt = connection.prepareStatement(sqlStmt)) {
-				pstmt.setString(1, th.getTitle());
-				pstmt.setString(2, th.getText());
-				
-				pstmt.executeUpdate();
-				connection.close();
-
+			connection.close();
+			
 			} catch (SQLException e) {
 				System.out.println("Fehler beim Speichern in die Datenbank: " + e.getMessage());
 				e.printStackTrace();
 				return e.getMessage();
 			}
 		}
-
 		return null;
 	}
-
-
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

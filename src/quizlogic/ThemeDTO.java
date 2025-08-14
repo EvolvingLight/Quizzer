@@ -14,20 +14,7 @@ public class ThemeDTO {
 	 */
 	private String text;
 
-	/**
-	 * 
-	 */
-	static String URL = "jdbc:mysql://localhost:3306/quizzer";
 	
-	/**
-	 * 
-	 */
-	static String USER = "root";
-	
-	/**
-	 * 
-	 */
-	static String PASSWORD = "";
 	
 	/**
 	 * 
