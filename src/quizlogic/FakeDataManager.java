@@ -11,6 +11,7 @@ public class FakeDataManager {
 		ThemeDTO dto = new ThemeDTO();
 		dto.setTitle("Thema xyz" );
 		dto.setText("BlaBlaBla");
+//		dto.setId(3);
 		
 		mngDB.saveThemeIntoDB(dto);
 	}

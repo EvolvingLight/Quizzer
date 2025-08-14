@@ -5,6 +5,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 
 import quizlogic.ThemeDTO;
 
@@ -48,24 +49,46 @@ public class DBManager {
 	 */
 	public String saveThemeIntoDB(ThemeDTO th) {
 		int id = th.getId();
-
+		PreparedStatement pstmt;
 		String sqlStmt;
 
-		if (id < 0) {
+		if (id <= 0) {
 			sqlStmt = ThemeDAO.SQL_INSERT_THEME;
+			System.out.println("SQL Insert used");
 		} else {
 			sqlStmt = ThemeDAO.SQL_UPDATE_THEME;
+			System.out.println("SQL Update used");
 		}
 
 		establishConnection();
 		
-		PreparedStatement pstmt;
+		// get id from database
 		try {
-			pstmt = connection.prepareStatement(sqlStmt);
+			PreparedStatement query = connection.prepareStatement(ThemeDAO.SQL_GET_ID);
+			query.setInt(1, id);
+			ResultSet rs = query.executeQuery();
+			
+			
+			while(rs.next()) {
+				id = rs.getInt("id");
+				th.setId(id); 
+			}			
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+			return e.getMessage();
+		}
+		
+		// standard input => id only part of input if id > 0
+		try {
+			pstmt = connection.prepareStatement(sqlStmt, Statement.RETURN_GENERATED_KEYS);
 			pstmt.setString(1, th.getTitle());
 			pstmt.setString(2, th.getText());
+			
+			if (id > 0) {
+				pstmt.setInt(3, id);
+			}
+			
 			pstmt.executeUpdate();
-			connection.close();
 			
 		} catch (SQLException e) {
 			System.out.println("Fehler beim Speichern in die Datenbank: " + e.getMessage());
@@ -73,30 +96,6 @@ public class DBManager {
 			return e.getMessage();
 		}
 		
-		if (id == 0) {
-			 // Return generated ID
-			try (ResultSet res = pstmt.getGeneratedKeys()) {
-				if (res.next()) {
-					th.setId(res.getInt(1));
-				}
-				connection.close();
-			} catch (SQLException e) {
-				System.out.println("Fehler beim Speichern in die Datenbank: " + e.getMessage());
-				e.printStackTrace();
-				return e.getMessage();
-			}
-			
-		} else {
-			try {
-			System.out.println("Id already used!");
-			connection.close();
-			
-			} catch (SQLException e) {
-				System.out.println("Fehler beim Speichern in die Datenbank: " + e.getMessage());
-				e.printStackTrace();
-				return e.getMessage();
-			}
-		}
 		return null;
 	}
 }
