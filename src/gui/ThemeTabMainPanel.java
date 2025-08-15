@@ -195,6 +195,10 @@ public class ThemeTabMainPanel extends QPanel implements ButtonPanelDelegate {
 	private void transferToDB() {
 		FakeDataManager fdm = new FakeDataManager();
 		fdm.createData();
+		// Update the table and refresh the view
+		mngBL.loadTheme();
+		revalidate();
+		repaint();
 	}
 
 	/**

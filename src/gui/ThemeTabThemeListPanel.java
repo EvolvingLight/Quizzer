@@ -51,15 +51,15 @@ public class ThemeTabThemeListPanel extends QPanel {
 
 	private JList<String> themes;
 
-	private ThemeDTO dto;
+	private ArrayList<ThemeDTO> dtoList;
 
 	/**
 	 * The constructor initializes and adds the components
 	 */
-	public ThemeTabThemeListPanel(ThemeDTO dto) {
+	public ThemeTabThemeListPanel(ArrayList<ThemeDTO> arrayList) {
 		super();
-		this.dto = dto;
-		System.out.println("theme list panel dto: " + dto);
+		this.dtoList = arrayList;
+
 		
 		initComponents();
 		addComponents();
@@ -105,13 +105,16 @@ public class ThemeTabThemeListPanel extends QPanel {
 	private void addThemeList() {
 		gbc.gridheight = 3; // Question Label and ScrollPane 3 columns high
 		gbc.gridwidth = 2; // Question ScrollPane 2 columns wide
+		ThemeDTO dto = new ThemeDTO();
 		
-		if (dto.getTitle() != null) {
-//			for (int i = 0; i < dto.; i++) {
+		
+		if (dtoList.size() > 0) {
+			for (int i = 0; i < dtoList.size(); i++) {
+				dto = dtoList.get(i);
 				String theme = dto.getTitle();
 				System.out.println("add theme list title: " + theme);
 				model.addElement(theme);
-//			}
+			}
 		}
 		
 		themes = new JList<String>(model);

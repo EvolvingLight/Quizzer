@@ -6,6 +6,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 
 import quizlogic.ThemeDTO;
 
@@ -106,13 +107,15 @@ public class DBManager {
 	 * 
 	 * @return ThemeDTO's
 	 */
-	public ThemeDTO loadDTOFromDB() {
+	public ArrayList<ThemeDTO> loadAllThemesFromDB() {
 		int id;
 		String themeTitle;
 		String themeText;
 
 		establishConnection();
 
+		ArrayList<ThemeDTO> list = new ArrayList<ThemeDTO>();
+		
 		try {
 			Statement stmt = connection.createStatement();
 			ResultSet rs = stmt.executeQuery(ThemeDAO.SQL_SELECT_ALL);
@@ -126,14 +129,15 @@ public class DBManager {
 				dto.setId(id);
 				dto.setTitle(themeTitle);
 				dto.setText(themeText);
-
+				list.add(dto);
 			}
 
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
+		
 		System.out.println("dto: " + dto.getInfo());
-		return dto;
+		return list;
 	}
 
 }
