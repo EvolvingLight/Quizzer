@@ -28,9 +28,11 @@ public class DBManager {
 	 */
 	static String PASSWORD = "";
 
+	public ThemeDTO dto;
+
 	/**
-	 * Establishes a connection to the database
-	 * If no connection can be established an error message will be displayed in the console
+	 * Establishes a connection to the database If no connection can be established
+	 * an error message will be displayed in the console
 	 */
 	private void establishConnection() {
 		try {
@@ -61,66 +63,77 @@ public class DBManager {
 		}
 
 		establishConnection();
-		
+
 		// get id from database
 		try {
 			PreparedStatement query = connection.prepareStatement(ThemeDAO.SQL_GET_ID);
 			query.setInt(1, id);
 			ResultSet rs = query.executeQuery();
-			
-			
-			while(rs.next()) {
+
+			while (rs.next()) {
 				id = rs.getInt("id");
-				th.setId(id); 
-			}			
+				th.setId(id);
+			}
 		} catch (SQLException e) {
 			System.out.println(e.getMessage());
 			return e.getMessage();
 		}
-		
+
 		// standard input => id only part of input if id > 0
 		try {
 			pstmt = connection.prepareStatement(sqlStmt, Statement.RETURN_GENERATED_KEYS);
 			pstmt.setString(1, th.getTitle());
 			pstmt.setString(2, th.getText());
-			
+
 			if (id > 0) {
 				pstmt.setInt(3, id);
 			}
-			
+
 			pstmt.executeUpdate();
-			
+
 		} catch (SQLException e) {
 			System.out.println("Fehler beim Speichern in die Datenbank: " + e.getMessage());
 			e.printStackTrace();
 			return e.getMessage();
 		}
-		
+
 		return null;
+
 	}
+
+	/**
+	 * Method to load existing DTO's from the DB
+	 * 
+	 * @return ThemeDTO's
+	 */
+	public ThemeDTO loadDTOFromDB() {
+		int id;
+		String themeTitle;
+		String themeText;
+
+		establishConnection();
+
+		try {
+			Statement stmt = connection.createStatement();
+			ResultSet rs = stmt.executeQuery(ThemeDAO.SQL_SELECT_ALL);
+
+			while (rs.next()) {
+				dto = new ThemeDTO();
+				id = rs.getInt("id");
+				themeTitle = rs.getString("themeTitle");
+				themeText = rs.getString("themeText");
+
+				dto.setId(id);
+				dto.setTitle(themeTitle);
+				dto.setText(themeText);
+
+			}
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		System.out.println("dto: " + dto.getInfo());
+		return dto;
+	}
+
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

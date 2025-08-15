@@ -1,17 +1,20 @@
 package gui;
 
 import java.awt.Dimension;
+import java.util.ArrayList;
 
+import javax.swing.DefaultListModel;
 import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
 import layout.QPanel;
+import quizlogic.ThemeDTO;
 
 /**
- * This class builds the view of the questionPanel
- * Several components are initialized, added and structured in GridBagyLayout 
+ * This class builds the view of the questionPanel Several components are
+ * initialized, added and structured in GridBagyLayout
  */
 public class ThemeTabThemeListPanel extends QPanel {
 
@@ -29,28 +32,39 @@ public class ThemeTabThemeListPanel extends QPanel {
 	 * Textfield to enter / show the text of the title
 	 */
 	public JTextField titleField;
-	
-	/**
-	 * Textarea to enter new questions
-	 */
-	public JTextArea questionArea;
-	
 
 	/**
-	 * Variable to define in which row of the GridBagLayout a component will be added
+	 * Array list holding the theme titles
+	 */
+	public ArrayList<String> themeList;
+	
+	/**
+	 * 
+	 */
+	private DefaultListModel<String> model;
+
+	/**
+	 * Variable to define in which row of the GridBagLayout a component will be
+	 * added
 	 */
 	private int row;
-	
+
+	private JList<String> themes;
+
+	private ThemeDTO dto;
+
 	/**
 	 * The constructor initializes and adds the components
 	 */
-	public ThemeTabThemeListPanel() {
+	public ThemeTabThemeListPanel(ThemeDTO dto) {
 		super();
+		this.dto = dto;
+		System.out.println("theme list panel dto: " + dto);
 		
 		initComponents();
 		addComponents();
 	}
-		
+
 	/**
 	 * Initializes the components
 	 */
@@ -60,75 +74,58 @@ public class ThemeTabThemeListPanel extends QPanel {
 		msgLabel = new JLabel();
 
 		titleField = new JTextField();
-		questionArea = new JTextArea(40, 200);
-		
+
+		model = new DefaultListModel<>();
 	}
 
 	/*
-	 * Adds the components to the panel
-	 * The components can be labels, textfields, textareas or checkboxes for example
+	 * Adds the components to the panel The components can be labels, textfields,
+	 * textareas or checkboxes for example
 	 */
 	private void addComponents() {
 		row = 0;
 		// Row 1: Theme (Label: "Themen")
 		addThemeLabelHeader();
-		
+
 		// Row 2+ ScrollPane including title list
 		addThemeList();
 	}
 
-
 	/**
-	 * Adds a labels title as header 
+	 * Adds a labels title as header
 	 */
 	private void addThemeLabelHeader() {
 		addComponent(themeLabelHeader, row, 0);
 		row++;
 	}
 
-
 	/**
 	 * Adds the question label and the scroll pane
 	 */
 	private void addThemeList() {
-		gbc.gridheight = 3;										// Question Label and ScrollPane 3 columns high
-		gbc.gridwidth = 2;										// Question ScrollPane 2 columns wide
-		JScrollPane pane = new JScrollPane(questionArea);
-		pane.setMinimumSize(new Dimension(300, 400));
-		addComponent(pane, row, 0);
-		gbc.gridwidth = 1;										// Back to standard => 1 column wide							
-		row+=gbc.gridheight;
-		gbc.gridheight = 1;										// Back to standard => 1 column high
+		gbc.gridheight = 3; // Question Label and ScrollPane 3 columns high
+		gbc.gridwidth = 2; // Question ScrollPane 2 columns wide
+		
+		if (dto.getTitle() != null) {
+//			for (int i = 0; i < dto.; i++) {
+				String theme = dto.getTitle();
+				System.out.println("add theme list title: " + theme);
+				model.addElement(theme);
+//			}
+		}
+		
+		themes = new JList<String>(model);
+		
+		
+		JScrollPane scrollPane = new JScrollPane(themes);
+
+
+		scrollPane.setMinimumSize(new Dimension(300, 400));
+		addComponent(scrollPane, row, 0);
+
+		gbc.gridwidth = 1; // Back to standard => 1 column wide
+		row += gbc.gridheight;
+		gbc.gridheight = 1; // Back to standard => 1 column high
 	}
 
-
-
-
-	
-
-
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
 }

@@ -68,7 +68,7 @@ public class ThemeTabMainPanel extends QPanel implements ButtonPanelDelegate {
 	 * New instance of the business logic manager to manage data transfer to the
 	 * business logic
 	 */
-	private BLManager mng = new BLManager();
+	private BLManager mngBL = new BLManager();
 
 	private DBManager mngDB = new DBManager();
 
@@ -83,6 +83,7 @@ public class ThemeTabMainPanel extends QPanel implements ButtonPanelDelegate {
 		initPanels();
 		setPanels();
 		addPanels();
+
 	}
 
 	/**
@@ -105,7 +106,7 @@ public class ThemeTabMainPanel extends QPanel implements ButtonPanelDelegate {
 		bottomPanel = new QPanel();
 
 		themeTabThemePanel = new ThemeTabThemePanel();
-		themeTabThemeListPanel = new ThemeTabThemeListPanel();
+		themeTabThemeListPanel = new ThemeTabThemeListPanel(mngBL.loadTheme());
 		themeTabButtonPanel = new ThemeTabButtonPanel(this);
 	}
 
@@ -188,7 +189,7 @@ public class ThemeTabMainPanel extends QPanel implements ButtonPanelDelegate {
 	@Override
 	public void thirdBtnWasClicked() {
 		System.out.println("third button clicked");
-
+		transferFromDB();
 	}
 
 	private void transferToDB() {
@@ -205,9 +206,16 @@ public class ThemeTabMainPanel extends QPanel implements ButtonPanelDelegate {
 		dto.setTitle(themeTabThemePanel.themeTitleTextField.getText());
 		dto.setText(themeTabThemePanel.themeTextArea.getText());
 		System.out.println("Vorher: " + dto.getInfo());
-		mng.saveTheme(dto);
+		mngBL.saveTheme(dto);
 		System.out.println(dto.getInfo());
 
+	}
+	
+	/**
+	 * 
+	 */
+	public void transferFromDB() {
+		mngBL.loadTheme();
 	}
 
 }

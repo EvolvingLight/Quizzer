@@ -4,7 +4,7 @@ import persistence.mariaDB.DBManager;
 
 	
 public class FakeDataManager {
-	private DBManager mngDB = new DBManager();
+	private DBManager beaver = new DBManager();
 	
 	public void createData() {
 		System.out.println("fdm triggered");
@@ -13,7 +13,7 @@ public class FakeDataManager {
 		dto.setText("BlaBlaBla");
 //		dto.setId(3);
 		
-		mngDB.saveThemeIntoDB(dto);
+		beaver.saveThemeIntoDB(dto);
 	}
 }
 

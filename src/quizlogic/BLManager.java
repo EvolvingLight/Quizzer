@@ -17,5 +17,11 @@ public class BLManager {
 		
 	}
 	
+	public ThemeDTO loadTheme() {
+		ThemeDTO dto = beaver.loadDTOFromDB(); 
+		System.out.println("BL DTO title: " + dto.getTitle());
+		return dto;
+		
+	}
 	
 }
