@@ -71,6 +71,8 @@ public class ThemeTabMainPanel extends QPanel implements ButtonPanelDelegate {
 	private BLManager mngBL = new BLManager();
 
 	private DBManager mngDB = new DBManager();
+	
+	public GUIManager mngGUI = new GUIManager();
 
 	/**
 	 * Constructs a new ThemeMainPanel. Initializes the layout, creates all required
@@ -106,8 +108,14 @@ public class ThemeTabMainPanel extends QPanel implements ButtonPanelDelegate {
 		bottomPanel = new QPanel();
 
 		themeTabThemePanel = new ThemeTabThemePanel();
-		themeTabThemeListPanel = new ThemeTabThemeListPanel(mngBL.loadTheme());
+		themeTabThemeListPanel = new ThemeTabThemeListPanel();
 		themeTabButtonPanel = new ThemeTabButtonPanel(this);
+		
+		System.out.println("mngGUI instanziiert? " + (mngGUI != null));
+		System.out.println("themeTabThemeListPanel instanziiert? " + (themeTabThemeListPanel != null));
+		mngGUI.setThemeListPanel(themeTabThemeListPanel);
+		
+		System.out.println("Panel nach setzen: " + mngGUI.getThemeListPanel());
 	}
 
 	/**
@@ -152,6 +160,7 @@ public class ThemeTabMainPanel extends QPanel implements ButtonPanelDelegate {
 
 		// Panel two => questionTabquestionListPanel
 		rightPanel.add(themeTabThemeListPanel);
+		mngGUI.refreshThemeList(null);
 
 		// Panel three => quesitonTabButtonPanel
 		bottomPanel.add(themeTabButtonPanel);
@@ -177,7 +186,7 @@ public class ThemeTabMainPanel extends QPanel implements ButtonPanelDelegate {
 	@Override
 	public void secondBtnWasClicked() {
 		// System.out.println("second button clicked");
-		// transferToBL();
+		transferToBL();
 		transferToDB();
 	}
 
@@ -195,10 +204,9 @@ public class ThemeTabMainPanel extends QPanel implements ButtonPanelDelegate {
 	private void transferToDB() {
 		FakeDataManager fdm = new FakeDataManager();
 		fdm.createData();
-		// Update the table and refresh the view
-		mngBL.loadTheme();
-		revalidate();
-		repaint();
+		mngBL.loadThemeList();
+		mngGUI.refreshThemeList(null);
+
 	}
 
 	/**
@@ -213,13 +221,15 @@ public class ThemeTabMainPanel extends QPanel implements ButtonPanelDelegate {
 		mngBL.saveTheme(dto);
 		System.out.println(dto.getInfo());
 
+
 	}
 	
 	/**
 	 * 
 	 */
 	public void transferFromDB() {
-		mngBL.loadTheme();
+		mngBL.loadThemeList();
+		
 	}
 
 }

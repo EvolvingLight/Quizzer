@@ -136,7 +136,6 @@ public class DBManager {
 			e.printStackTrace();
 		}
 		
-		System.out.println("dto: " + dto.getInfo());
 		return list;
 	}
 

@@ -1,6 +1,5 @@
 package gui;
 
-import java.awt.Dimension;
 import java.util.ArrayList;
 
 import javax.swing.DefaultListModel;
@@ -10,6 +9,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 
 import layout.QPanel;
+import persistence.mariaDB.ThemeDAO;
 import quizlogic.ThemeDTO;
 
 /**
@@ -48,21 +48,26 @@ public class ThemeTabThemeListPanel extends QPanel {
 	 * added
 	 */
 	private int row;
+	
+	JScrollPane scrollPane;
 
-	private JList<String> themes;
+	public JList<String> themes;
 
-	private ArrayList<ThemeDTO> dtoList;
+	private ArrayList<ThemeDTO> dtoThemeList;
+
+	private ArrayList<ThemeDTO> arrayThemeList;
+
+	private ThemeDAO themeDAO;
 
 	/**
 	 * The constructor initializes and adds the components
 	 */
-	public ThemeTabThemeListPanel(ArrayList<ThemeDTO> arrayList) {
+	public ThemeTabThemeListPanel() {
 		super();
-		this.dtoList = arrayList;
-
 		
 		initComponents();
 		addComponents();
+
 	}
 
 	/**
@@ -70,11 +75,8 @@ public class ThemeTabThemeListPanel extends QPanel {
 	 */
 	void initComponents() {
 		themeLabelHeader = new JLabel("Themen");
-
 		msgLabel = new JLabel();
-
 		titleField = new JTextField();
-
 		model = new DefaultListModel<>();
 	}
 
@@ -100,35 +102,93 @@ public class ThemeTabThemeListPanel extends QPanel {
 	}
 
 	/**
-	 * Adds the question label and the scroll pane
+	 * Adds the theme list and the scroll pane
+	 * Themes will be added using the refreshThemeList method
 	 */
-	private void addThemeList() {
-		gbc.gridheight = 3; // Question Label and ScrollPane 3 columns high
-		gbc.gridwidth = 2; // Question ScrollPane 2 columns wide
-		ThemeDTO dto = new ThemeDTO();
-		
-		
-		if (dtoList.size() > 0) {
-			for (int i = 0; i < dtoList.size(); i++) {
-				dto = dtoList.get(i);
-				String theme = dto.getTitle();
-				System.out.println("add theme list title: " + theme);
-				model.addElement(theme);
-			}
-		}
-		
-		themes = new JList<String>(model);
-		
-		
-		JScrollPane scrollPane = new JScrollPane(themes);
+	public void addThemeList() {
+	    gbc.gridheight = 3;
+	    gbc.gridwidth = 2;
 
+	    if (themes == null) { 
+	        themes = new JList<>(model);
+	        scrollPane = new JScrollPane(themes);
+	        addComponent(scrollPane, row, 0);
+	        
+	    }
 
-		scrollPane.setMinimumSize(new Dimension(300, 400));
-		addComponent(scrollPane, row, 0);
+	    gbc.gridwidth = 1;
+	    row += gbc.gridheight;
+	    gbc.gridheight = 1;
+	}   
+	
+//	public void addThemeList() {
+//		gbc.gridheight = 3; // Question Label and ScrollPane 3 columns high
+//		gbc.gridwidth = 2; // Question ScrollPane 2 columns wide
+//		ThemeDTO dto = new ThemeDTO();
+//		
+//		
+//		if (dtoThemeList.size() > 0) {
+//			for (int i = 0; i < dtoThemeList.size(); i++) {
+//				dto = dtoThemeList.get(i);
+//				String theme = dto.getTitle();
+//				model.addElement(theme);
+//			}
+//		}
+//		
+//		themes = new JList<String>(model);
+//		scrollPane = new JScrollPane(themes);
+//		addComponent(scrollPane, row, 0);
+//		
+//		
+//		gbc.gridwidth = 1; // Back to standard => 1 column wide
+//		row += gbc.gridheight; // Adds rows used for the scroll pane to the variable -row-
+//		gbc.gridheight = 1; // Back to standard => 1 column high
+//	}
+	
+	public void refreshThemeList(ArrayList<ThemeDTO> updatedThemeList) {
+	    model.clear();
 
-		gbc.gridwidth = 1; // Back to standard => 1 column wide
-		row += gbc.gridheight;
-		gbc.gridheight = 1; // Back to standard => 1 column high
+	    if (updatedThemeList != null && !updatedThemeList.isEmpty()) {
+	        for (ThemeDTO dto : updatedThemeList) {
+	            model.addElement(dto.getTitle());
+	        }
+	        System.out.println("JList aktualisiert mit " + updatedThemeList.size() + " Einträgen");
+	    }
+	}   
+
+	
+	public DefaultListModel<String> getModel() {
+		return model;
 	}
 
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

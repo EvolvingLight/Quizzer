@@ -9,7 +9,7 @@ public class FakeDataManager {
 	public void createData() {
 		System.out.println("fdm triggered");
 		ThemeDTO dto = new ThemeDTO();
-		dto.setTitle("Thema xyz" );
+		dto.setTitle("Thema def" );
 		dto.setText("BlaBlaBla");
 //		dto.setId(3);
 		
