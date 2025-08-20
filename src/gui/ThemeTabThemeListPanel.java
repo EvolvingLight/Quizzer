@@ -1,20 +1,22 @@
 package gui;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import javax.swing.DefaultListModel;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 
 import layout.QPanel;
-import persistence.mariaDB.ThemeDAO;
 import quizlogic.ThemeDTO;
 
 /**
- * This class builds the view of the questionPanel Several components are
- * initialized, added and structured in GridBagyLayout
+ * This class builds the view of the questionPanel 
+ * Several components are initialized, added and structured in GridBagyLayout
  */
 public class ThemeTabThemeListPanel extends QPanel {
 
@@ -39,25 +41,32 @@ public class ThemeTabThemeListPanel extends QPanel {
 	public ArrayList<String> themeList;
 	
 	/**
-	 * 
+	 * Default list model to display and refresh the theme list
 	 */
-	private DefaultListModel<String> model;
+	private DefaultListModel<ThemeDTO> model;
 
 	/**
-	 * Variable to define in which row of the GridBagLayout a component will be
-	 * added
+	 * Variable to define in which row of the GridBagLayout 
+	 * a component will be added
 	 */
 	private int row;
 	
+	/**
+	 * A scroll pane to show the theme list
+	 */
 	JScrollPane scrollPane;
 
-	public JList<String> themes;
+	/**
+	 * A list containing the themes to display in the scroll pane
+	 */
+	public JList<ThemeDTO> themes;
+	
+	HashMap<Integer, String> idAndThemeTitle;
 
-	private ArrayList<ThemeDTO> dtoThemeList;
-
-	private ArrayList<ThemeDTO> arrayThemeList;
-
-	private ThemeDAO themeDAO;
+	/**
+	 * Theme ID used to refresh GUI
+	 */
+	public int themeID;
 
 	/**
 	 * The constructor initializes and adds the components
@@ -67,7 +76,7 @@ public class ThemeTabThemeListPanel extends QPanel {
 		
 		initComponents();
 		addComponents();
-
+		setupListSelectionListener();
 	}
 
 	/**
@@ -108,7 +117,7 @@ public class ThemeTabThemeListPanel extends QPanel {
 	public void addThemeList() {
 	    gbc.gridheight = 3;
 	    gbc.gridwidth = 2;
-
+	    
 	    if (themes == null) { 
 	        themes = new JList<>(model);
 	        scrollPane = new JScrollPane(themes);
@@ -121,43 +130,43 @@ public class ThemeTabThemeListPanel extends QPanel {
 	    gbc.gridheight = 1;
 	}   
 	
-//	public void addThemeList() {
-//		gbc.gridheight = 3; // Question Label and ScrollPane 3 columns high
-//		gbc.gridwidth = 2; // Question ScrollPane 2 columns wide
-//		ThemeDTO dto = new ThemeDTO();
-//		
-//		
-//		if (dtoThemeList.size() > 0) {
-//			for (int i = 0; i < dtoThemeList.size(); i++) {
-//				dto = dtoThemeList.get(i);
-//				String theme = dto.getTitle();
-//				model.addElement(theme);
-//			}
-//		}
-//		
-//		themes = new JList<String>(model);
-//		scrollPane = new JScrollPane(themes);
-//		addComponent(scrollPane, row, 0);
-//		
-//		
-//		gbc.gridwidth = 1; // Back to standard => 1 column wide
-//		row += gbc.gridheight; // Adds rows used for the scroll pane to the variable -row-
-//		gbc.gridheight = 1; // Back to standard => 1 column high
-//	}
-	
-	public void refreshThemeList(ArrayList<ThemeDTO> updatedThemeList) {
-	    model.clear();
-
-	    if (updatedThemeList != null && !updatedThemeList.isEmpty()) {
-	        for (ThemeDTO dto : updatedThemeList) {
-	            model.addElement(dto.getTitle());
+	public void setupListSelectionListener() {
+	    themes.addListSelectionListener(new ListSelectionListener() {
+	    	
+	        @Override
+	        public void valueChanged(ListSelectionEvent e) {
+	            if (!e.getValueIsAdjusting()) {
+	                ThemeDTO selectedTheme = themes.getSelectedValue();
+	                if (selectedTheme != null) {
+	                    System.out.println("SASL => Theme ID: " + selectedTheme.getId());
+	                    System.out.println("SASL => Theme Title: " + selectedTheme.getTitle());
+	                    
+	                }
+	            }
 	        }
-	        System.out.println("JList aktualisiert mit " + updatedThemeList.size() + " Einträgen");
-	    }
-	}   
+	    });
+	}
+	
+	/**
+	 * Clears the model (theme list) then adds the title of the 
+	 * DTO elements of the updated theme list to the model. 
+	 * @param updatedThemeList
+	 */
+	public void refreshThemeList(ArrayList<ThemeDTO> updatedThemeList) {
+	    model.clear();	   
+	    
+	   for (ThemeDTO theme : updatedThemeList) {
+		   model.addElement(theme);
+	   }
+
+	}
 
 	
-	public DefaultListModel<String> getModel() {
+	/**
+	 * Getter for the model
+	 * @return default list model
+	 */
+	public DefaultListModel<ThemeDTO> getModel() {
 		return model;
 	}
 

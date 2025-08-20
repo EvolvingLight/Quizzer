@@ -15,7 +15,6 @@ public class ThemeDTO {
 	private String text;
 
 	
-	
 	/**
 	 * 
 	 * @return theme id
@@ -73,5 +72,25 @@ public class ThemeDTO {
 		info += "Text: " + text;
 		return info;
 	}
+	
+	/**
+	 * Overwrites the default toString method.
+	 * Aim is to display the title instead of the memory address (ThemeDTO@123456fg) 
+	 */
+	@Override
+	public String toString() {
+		return title;
+	}
 
 }
+
+
+
+
+
+
+
+
+
+
+

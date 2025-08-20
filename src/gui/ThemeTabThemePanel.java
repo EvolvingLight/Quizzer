@@ -41,14 +41,14 @@ public class ThemeTabThemePanel extends QPanel {
 	public TextArea themeTextArea;
 	
 	/**
-	 * Variable to define the row of the gridbaglayout
+	 * Variable to define the row of the grid bag layout
 	 */
 	private int row;
 	
 	/**
 	 * Label to display a message if necessary
 	 */
-	private JLabel msgLabel;
+	public JLabel msgLabel;
 
 	/**
 	 * The constructor initializes and adds the components
@@ -103,19 +103,20 @@ public class ThemeTabThemePanel extends QPanel {
 	}
 
 	/**
-	 * Adds the title row ("Titel", textfield) 
+	 * Adds the title row ("Title", textfield) 
 	 */
 	private void addTitle() {
 		addComponent(themeTitleLabel, row, 0);
 		gbc.gridwidth = 2; // Theme textfield 2 columns wide
 		addComponent(themeTitleTextField, row, 1);
+//		refreshThemeTitle(); // Writes the title which is selected in the title list into the textfield
 		gbc.gridwidth = 1; // Back to standard => 1 column wide
 		addBoxOrEmpty(row, 1);
 		row++;
 	}
 
 	/**
-	 * Adds a label ("Informationen zum Thema") 
+	 * Adds a label (Info) 
 	 */
 	private void addThemeInfo() {
 		addComponent(themeInfoLabel, row, 0);
@@ -142,9 +143,41 @@ public class ThemeTabThemePanel extends QPanel {
 	 */
 	private void addMsgLabel() {
 		gbc.gridwidth = 2; // Message panel 2 columns wide
-		msgLabel.setText("Hier Könnte ihre Werbung stehen!");
+		msgLabel.setText("");
 		addComponent(msgLabel, row, 0);
 		row++;
 	}
 
+	public void refreshThemeTitle(String titleText) {
+		themeTitleTextField.setText(titleText);
+	}
+	
+	public void refreshThemeInfo(String themeInfo) {
+		themeTextArea.setText(themeInfo);
+	}
+	
+	public void clearInputFields() {
+		themeTitleTextField.setText("");
+		themeTextArea.setText("");
+	}
+	
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

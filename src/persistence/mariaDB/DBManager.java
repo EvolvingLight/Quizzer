@@ -10,6 +10,10 @@ import java.util.ArrayList;
 
 import quizlogic.ThemeDTO;
 
+/**
+ * This class manages the connection to the database. IT saves and loads data
+ * from / into the database
+ */
 public class DBManager {
 
 	private Connection connection;
@@ -41,6 +45,26 @@ public class DBManager {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
+	}
+
+	public void deleteTheme(ThemeDTO th) {
+		int id = th.getId();
+		PreparedStatement pstmt;
+		String sqlStmt;
+
+		// standard input => id only part of input if id > 0
+		try {
+			sqlStmt = ThemeDAO.SQL_DELETE_THEME;
+			pstmt = connection.prepareStatement(sqlStmt, Statement.RETURN_GENERATED_KEYS);
+			pstmt.setInt(1, id);
+			pstmt.executeUpdate();
+
+		} catch (SQLException e) {
+			System.out.println("Fehler beim Löschen des Themas aus der Datenbank: " + e.getMessage());
+			e.printStackTrace();
+		}
+
+//		return null;
 	}
 
 	/**
@@ -103,7 +127,9 @@ public class DBManager {
 	}
 
 	/**
-	 * Method to load existing DTO's from the DB
+	 * Establishes a connection to the database Creates a new array list for the
+	 * DTO's Then querys data from the database and saves it to the DTO's At least
+	 * saves the DTO's to a list
 	 * 
 	 * @return ThemeDTO's
 	 */
@@ -115,7 +141,7 @@ public class DBManager {
 		establishConnection();
 
 		ArrayList<ThemeDTO> list = new ArrayList<ThemeDTO>();
-		
+
 		try {
 			Statement stmt = connection.createStatement();
 			ResultSet rs = stmt.executeQuery(ThemeDAO.SQL_SELECT_ALL);
@@ -135,7 +161,7 @@ public class DBManager {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		
+
 		return list;
 	}
 

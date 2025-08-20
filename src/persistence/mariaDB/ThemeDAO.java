@@ -6,6 +6,7 @@ public class ThemeDAO {
 	public static final String SQL_GET_ID = "select id from themes where id = ?";
 	public static final String SQL_SELECT_ALL = "select * from themes";
 	public static final String SQL_SELECT_THEMES = "select themeTitle from themes";
+	public static final String SQL_DELETE_THEME = "delete from themes where id = ?";
 	
 	
 	
