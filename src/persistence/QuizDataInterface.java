@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 import quizlogic.serialization.Answer;
 import quizlogic.serialization.Question;
-import quizlogic.serialization.Thema;
+import quizlogic.serialization.Theme;
 
 /**
  * This interface represents several methods uses inside the project to handle data
@@ -21,12 +21,12 @@ public interface QuizDataInterface {
 	/**
 	 * Retrieves a list of all available themes
 	 */
-	public ArrayList<Thema> getAllThemes();
+	public ArrayList<Theme> getAllThemes();
 
 	/**
 	 * Retrieves all questions associated with the specified theme.
 	 */
-	public ArrayList<Question> getQuestionFor(Thema th);
+	public ArrayList<Question> getQuestionFor(Theme th);
 
 	/**
 	 * Retrieves all answers associated with the specified question.
@@ -37,12 +37,12 @@ public interface QuizDataInterface {
 	 * Persists the given theme to the data store. If the theme is new, it will be
 	 * created.
 	 */
-	public String saveTheme(Thema th);
+	public String saveTheme(Theme th);
 
 	/**
 	 * Removes the specified theme from the data store.
 	 */
-	public String deleteTheme(Thema th);
+	public String deleteTheme(Theme th);
 
 	/**
 	 * This method saves a new question or updates an existing one

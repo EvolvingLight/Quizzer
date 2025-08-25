@@ -14,6 +14,8 @@ public class BLManager {
 	
 	private DBManager beaver = new DBManager();
 	
+	
+	// ------ Themes ------ //
 	/**
 	 * Receives a DTO Object from the MainPanel and saves it in the database (DAO)
 	 */
@@ -30,11 +32,31 @@ public class BLManager {
 		return updatedList;
 	}
 	
+	/**
+	 * 
+	 * @param th
+	 */
 	public void deleteTheme(ThemeDTO th) {
 		beaver.deleteTheme(th);
 	}
 	
+	// ------ Questions ------ //
+	public ArrayList<QuestionDTO> loadQuestionList() {
+		ArrayList<QuestionDTO> questionList = beaver.loadAllQuestionsFromDB();
+		return questionList;
+	}
+	
 }
+
+
+
+
+
+
+
+
+
+
 
 
 

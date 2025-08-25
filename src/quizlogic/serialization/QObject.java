@@ -6,7 +6,7 @@ import java.io.Serializable;
  * /**
  * Base class for objects that require a unique identifier and support serialization
  * This class provides a common {@code id} field and serialization capability for subclasses.
- * It serves as a foundation for entity-like classes such as {@link Question} or {@link Thema}.
+ * It serves as a foundation for entity-like classes such as {@link Question} or {@link Theme}.
  */
 public class QObject implements Serializable {
 	

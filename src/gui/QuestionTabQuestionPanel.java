@@ -223,10 +223,15 @@ public class QuestionTabQuestionPanel extends QPanel {
 	 */
 	private void addMsgPanel() {
 		gbc.gridwidth = 2;											// Message panel 2 columns wide
-		msgLabel.setText("Hier Könnte ihre Werbung stehen!");
+		msgLabel.setText("");
 		addComponent(msgLabel, row, 0);
 		row++;
+		gbc.gridwidth = 1;											// Standard value
 	}
+
+
+
+
 
 	
 

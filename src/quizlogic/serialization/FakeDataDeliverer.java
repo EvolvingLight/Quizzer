@@ -8,7 +8,7 @@ public class FakeDataDeliverer implements Serializable {
 	
 	protected static final long serialVersionUID = 1L;
 
-	public ArrayList<Thema> themes;
+	public ArrayList<Theme> themes;
 	public ArrayList<Question> questions;
 
 	/**
@@ -24,11 +24,11 @@ public class FakeDataDeliverer implements Serializable {
 		// Zufälliges Thema aus der Liste auswählen
 		Random random = new Random();
 		int indexT = random.nextInt(themes.size());
-		Thema thema = themes.get(indexT);
+		Theme theme = themes.get(indexT);
 
 		// Aus der Liste der Fragen zum ausgewählten Thema eine Frage auswählen
-		int indexQ = random.nextInt(thema.getQuestions().size());
-		Question que = thema.getQuestions().get(indexQ);
+		int indexQ = random.nextInt(theme.getQuestions().size());
+		Question que = theme.getQuestions().get(indexQ);
 
 		return que;
 	}
@@ -40,11 +40,11 @@ public class FakeDataDeliverer implements Serializable {
 
 	public void createThemes(int count) {
 
-		themes = new ArrayList<Thema>();
-		Thema th;
+		themes = new ArrayList<Theme>();
+		Theme th;
 
 		for (int i = 0; i < count; i++) {
-			th = new Thema();
+			th = new Theme();
 			th.setId(i);
 			th.setTitle("Title of category " + i);
 			th.setText("Text of category " + i);
@@ -54,7 +54,7 @@ public class FakeDataDeliverer implements Serializable {
 		}
 	}
 	
-	public void createQuestionsFor(Thema th) {
+	public void createQuestionsFor(Theme th) {
 		
 		questions = new ArrayList<Question>();
 		Question q;

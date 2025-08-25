@@ -49,6 +49,11 @@ public class ThemeTabThemePanel extends QPanel {
 	 * Label to display a message if necessary
 	 */
 	public JLabel msgLabel;
+	
+	/**
+	 * Delegate between theme panels
+	 */
+	ThemeTabDelegate delegate;
 
 	/**
 	 * The constructor initializes and adds the components
@@ -91,7 +96,7 @@ public class ThemeTabThemePanel extends QPanel {
 
 		// Row 7: Message label (label)
 		addMsgLabel();
-
+		
 	}
 
 	/**

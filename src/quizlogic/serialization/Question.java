@@ -25,7 +25,7 @@ public class Question extends QObject implements Serializable {
 	/**
 	 * The theme associated to the question
 	 */
-	private Thema thema;
+	private Theme theme;
 	
 	/**
 	 * An ArrayList with possible answers to the question
@@ -34,12 +34,12 @@ public class Question extends QObject implements Serializable {
 
 	/**
 	 * This constructor creates a question object associated to the theme 
-	 * @param thema 
+	 * @param theme 
 	 * The theme to associate with this question, must not be null
 	 */
-	public Question(Thema thema) {
+	public Question(Theme theme) {
 		super();
-		this.thema = thema;
+		this.theme = theme;
 	}
 	
 	/**
@@ -66,17 +66,17 @@ public class Question extends QObject implements Serializable {
 	 * Returns the theme associated with this question
 	 * @return the theme, never null after construction
 	 */
-	public Thema getThema() {
-		return thema;
+	public Theme getTheme() {
+		return theme;
 	}
 	
 	/**
 	 * Sets the theme for this question.
-     * @param thema 
+     * @param theme 
      * The theme to set; must not be null
 	 */
-	public void setThema(Thema thema) {
-		this.thema = thema;
+	public void setTheme(Theme theme) {
+		this.theme = theme;
 	}
 	
 	/**

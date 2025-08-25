@@ -1,7 +1,6 @@
 package gui;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 import javax.swing.DefaultListModel;
 import javax.swing.JLabel;
@@ -60,13 +59,16 @@ public class ThemeTabThemeListPanel extends QPanel {
 	 * A list containing the themes to display in the scroll pane
 	 */
 	public JList<ThemeDTO> themes;
-	
-	HashMap<Integer, String> idAndThemeTitle;
 
 	/**
 	 * Theme ID used to refresh GUI
 	 */
 	public int themeID;
+	
+	/**
+	 * Delegate between theme panels
+	 */
+	ThemeTabDelegate delegate;
 
 	/**
 	 * The constructor initializes and adds the components
@@ -121,8 +123,9 @@ public class ThemeTabThemeListPanel extends QPanel {
 	    if (themes == null) { 
 	        themes = new JList<>(model);
 	        scrollPane = new JScrollPane(themes);
-	        addComponent(scrollPane, row, 0);
-	        
+	        int verticalPolicy = JScrollPane.VERTICAL_SCROLLBAR_ALWAYS;
+			scrollPane.setVerticalScrollBarPolicy(verticalPolicy);
+			addComponent(scrollPane, row, 0);
 	    }
 
 	    gbc.gridwidth = 1;
@@ -132,15 +135,17 @@ public class ThemeTabThemeListPanel extends QPanel {
 	
 	public void setupListSelectionListener() {
 	    themes.addListSelectionListener(new ListSelectionListener() {
-	    	
-	        @Override
+
+
+			@Override
 	        public void valueChanged(ListSelectionEvent e) {
+				delegate.clearMsgLabel();
 	            if (!e.getValueIsAdjusting()) {
 	                ThemeDTO selectedTheme = themes.getSelectedValue();
 	                if (selectedTheme != null) {
-	                    System.out.println("SASL => Theme ID: " + selectedTheme.getId());
-	                    System.out.println("SASL => Theme Title: " + selectedTheme.getTitle());
-	                    
+	                    System.out.println("Selected Theme ID: " + selectedTheme.getId());
+	                    System.out.println("Selected Theme Title: " + selectedTheme.getTitle());
+	                    delegate.refreshThemePanel(selectedTheme);
 	                }
 	            }
 	        }

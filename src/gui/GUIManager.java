@@ -29,29 +29,19 @@ public class GUIManager {
 	}
 
 	// ------ Theme Tab Theme Panel ------ //
-	public String getSelectedThemeTitle() {
+	public ThemeDTO getSelectedTheme() {
 		ThemeDTO selectedTheme = themeListPanel.themes.getSelectedValue();
 //		System.out.println("getSelectedThemeTitle() => " + selectedTheme.getTitle());
-		return selectedTheme.getTitle();
-	}
-	
-	public Integer getSelectedThemeID() {
-		ThemeDTO selectedTheme = themeListPanel.themes.getSelectedValue();
-//		System.out.println("getSelectedThemeTitle() => " + selectedTheme.getTitle());
-		return selectedTheme.getId();
+		return selectedTheme;
 	}
 
-	public void refreshThemePanel() {
-		ThemeDTO selectedTheme = themeListPanel.themes.getSelectedValue();
+	public void refreshThemePanel(ThemeDTO selectedTheme) {
 		
 		if (selectedTheme != null) {
 			themePanel.refreshThemeTitle(selectedTheme.getTitle());
 			themePanel.refreshThemeInfo(selectedTheme.getText());
 		}
-
 	}
-
-	
 
 	// Setter-Methode
 	public void setThemeListPanel(ThemeTabThemeListPanel themeListPanel) {

@@ -13,6 +13,11 @@ public class ThemeDTO {
 	 * String to hold the theme text
 	 */
 	private String text;
+	
+	/**
+	 * Object, which holds the questions and answers
+	 */
+	private QuestionDTO questionDTO;
 
 	
 	/**
@@ -81,7 +86,25 @@ public class ThemeDTO {
 	public String toString() {
 		return title;
 	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public QuestionDTO getQuestionDTO() {
+		return questionDTO;
+	}
 
+	/**
+	 * 
+	 * @param questionDTO
+	 */
+	public void setQuestionDTO(QuestionDTO questionDTO) {
+		this.questionDTO = questionDTO;
+	}
+
+	
+	
 }
 
 

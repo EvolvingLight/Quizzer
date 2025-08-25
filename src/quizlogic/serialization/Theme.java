@@ -8,7 +8,7 @@ import java.util.ArrayList;
  * And returns a string with informations like title, question text and answers for display or debugging
  * This class is serializable to support persistence
  */
-public class Thema extends QObject implements Serializable {
+public class Theme extends QObject implements Serializable {
 	
 	protected static final long serialVersionUID = 1L;
 	

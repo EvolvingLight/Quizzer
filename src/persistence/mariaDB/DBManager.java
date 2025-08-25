@@ -8,6 +8,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 
+import quizlogic.QuestionDTO;
 import quizlogic.ThemeDTO;
 
 /**
@@ -33,7 +34,8 @@ public class DBManager {
 	 */
 	static String PASSWORD = "";
 
-	public ThemeDTO dto;
+	public ThemeDTO themeDTO;
+	public QuestionDTO questionDTO;
 
 	/**
 	 * Establishes a connection to the database If no connection can be established
@@ -52,12 +54,15 @@ public class DBManager {
 		PreparedStatement pstmt;
 		String sqlStmt;
 
+		establishConnection();
+
 		// standard input => id only part of input if id > 0
 		try {
 			sqlStmt = ThemeDAO.SQL_DELETE_THEME;
-			pstmt = connection.prepareStatement(sqlStmt, Statement.RETURN_GENERATED_KEYS);
+			pstmt = connection.prepareStatement(sqlStmt);
 			pstmt.setInt(1, id);
 			pstmt.executeUpdate();
+			connection.close();
 
 		} catch (SQLException e) {
 			System.out.println("Fehler beim Löschen des Themas aus der Datenbank: " + e.getMessage());
@@ -79,30 +84,15 @@ public class DBManager {
 		PreparedStatement pstmt;
 		String sqlStmt;
 
-		if (id <= 0) {
-			sqlStmt = ThemeDAO.SQL_INSERT_THEME;
-			System.out.println("SQL Insert used");
-		} else {
+		if (id > 0) {
 			sqlStmt = ThemeDAO.SQL_UPDATE_THEME;
 			System.out.println("SQL Update used");
+		} else {
+			sqlStmt = ThemeDAO.SQL_INSERT_THEME;
+			System.out.println("SQL Insert used");
 		}
 
 		establishConnection();
-
-		// get id from database
-		try {
-			PreparedStatement query = connection.prepareStatement(ThemeDAO.SQL_GET_ID);
-			query.setInt(1, id);
-			ResultSet rs = query.executeQuery();
-
-			while (rs.next()) {
-				id = rs.getInt("id");
-				th.setId(id);
-			}
-		} catch (SQLException e) {
-			System.out.println(e.getMessage());
-			return e.getMessage();
-		}
 
 		// standard input => id only part of input if id > 0
 		try {
@@ -115,54 +105,127 @@ public class DBManager {
 			}
 
 			pstmt.executeUpdate();
+			ResultSet res = pstmt.getGeneratedKeys();
+			if (res.next()) {
+				th.setId(res.getInt(1));
+			}
 
 		} catch (SQLException e) {
 			System.out.println("Fehler beim Speichern in die Datenbank: " + e.getMessage());
 			e.printStackTrace();
 			return e.getMessage();
 		}
-
 		return null;
-
 	}
 
 	/**
-	 * Establishes a connection to the database Creates a new array list for the
-	 * DTO's Then querys data from the database and saves it to the DTO's At least
-	 * saves the DTO's to a list
+	 * Establishes a connection to the database. Creates a new array list for the
+	 * DTO's Then querys data from the database and saves it to the DTO's. As last
+	 * action saves the DTO's to a list
 	 * 
 	 * @return ThemeDTO's
 	 */
 	public ArrayList<ThemeDTO> loadAllThemesFromDB() {
-		int id;
+		int themeID;
 		String themeTitle;
 		String themeText;
+		int questionID;
+		String questionTitle;
+		String questionText;
+		String sqlStmt;
+		int questionTableThemeID;
 
 		establishConnection();
 
-		ArrayList<ThemeDTO> list = new ArrayList<ThemeDTO>();
+		ArrayList<ThemeDTO> themeList = new ArrayList<ThemeDTO>();
 
 		try {
-			Statement stmt = connection.createStatement();
-			ResultSet rs = stmt.executeQuery(ThemeDAO.SQL_SELECT_ALL);
+			Statement stmtTheme = connection.createStatement();
+			ResultSet rsTheme = stmtTheme.executeQuery(ThemeDAO.SQL_SELECT_ALL);
 
-			while (rs.next()) {
-				dto = new ThemeDTO();
-				id = rs.getInt("id");
-				themeTitle = rs.getString("themeTitle");
-				themeText = rs.getString("themeText");
+			while (rsTheme.next()) {
+				themeDTO = new ThemeDTO();
+				themeID = rsTheme.getInt("id");
+				themeTitle = rsTheme.getString("themeTitle");
+				themeText = rsTheme.getString("themeText");
 
-				dto.setId(id);
-				dto.setTitle(themeTitle);
-				dto.setText(themeText);
-				list.add(dto);
+				themeDTO.setId(themeID);
+				themeDTO.setTitle(themeTitle);
+				themeDTO.setText(themeText);
+
+//				sqlStmt = QuestionDAO.SQL_SELECT_QUESTION_BY_THEME;
+//				PreparedStatement pstmtQuestion = connection.prepareStatement(sqlStmt);
+//				pstmtQuestion.setInt(1, themeID);
+//				ResultSet rsQuestion = pstmtQuestion.executeQuery();
+				
+				Statement stmtQuestion = connection.createStatement();
+				ResultSet rsQuestion = stmtQuestion.executeQuery(QuestionDAO.SQL_SELECT_ALL);
+
+				while (rsQuestion.next()) {
+					questionDTO = new QuestionDTO();
+
+					questionID = rsQuestion.getInt("id");
+					questionTitle = rsQuestion.getString("questionTitle");
+					questionText = rsQuestion.getString("questionText");
+					questionTableThemeID = rsQuestion.getInt("themeID");
+
+					questionDTO.setQuestionID(questionID);
+					questionDTO.setQuestionTitle(questionTitle);
+					questionDTO.setQuestionText(questionText);
+					questionDTO.setThemeID(questionTableThemeID);
+					
+					themeDTO.setQuestionDTO(questionDTO);
+					themeList.add(themeDTO);
+				}
 			}
 
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 
-		return list;
+		return themeList;
 	}
 
+	/**
+	 * Establishes a connection to the database. Creates a new array list for the
+	 * DTO's Then querys data from the database and saves it to the DTO's. As last
+	 * action saves the DTO's to a list
+	 * 
+	 * @return ThemeDTO's
+	 */
+	public ArrayList<QuestionDTO> loadAllQuestionsFromDB() {
+		int questionID;
+		String questionTitle;
+		String questionText;
+		int questionThemeID;
+
+		establishConnection();
+
+		ArrayList<QuestionDTO> questionList = new ArrayList<QuestionDTO>();
+
+		try {
+			Statement stmt = connection.createStatement();
+			ResultSet rs = stmt.executeQuery(QuestionDAO.SQL_SELECT_ALL);
+
+			while (rs.next()) {
+				questionDTO = new QuestionDTO();
+				questionID = rs.getInt("id");
+				questionTitle = rs.getString("questionTitle");
+				questionText = rs.getString("questionText");
+				questionThemeID = rs.getInt("themeID");
+
+				questionDTO.setQuestionID(questionID);
+				questionDTO.setQuestionTitle(questionTitle);
+				questionDTO.setQuestionText(questionText);
+				questionDTO.setThemeID(questionThemeID);
+
+				questionList.add(questionDTO);
+			}
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		return questionList;
+	}
 }

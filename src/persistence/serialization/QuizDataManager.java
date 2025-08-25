@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import persistence.QuizDataInterface;
 import quizlogic.serialization.Answer;
 import quizlogic.serialization.Question;
-import quizlogic.serialization.Thema;
+import quizlogic.serialization.Theme;
 
 /**
  * This class manages different methods like save or delete operations used via the QuizDataInterface
@@ -36,7 +36,7 @@ public class QuizDataManager implements QuizDataInterface {
 	/**
 	 * The theme of a question
 	 */
-	private Thema th;
+	private Theme th;
 
 	/**
 	 * Constructor for this class
@@ -60,9 +60,9 @@ public class QuizDataManager implements QuizDataInterface {
 	 * @return all themes
 	 */
 	@Override
-	public ArrayList<Thema> getAllThemes() {
+	public ArrayList<Theme> getAllThemes() {
 		
-		ArrayList<Thema> themen = new ArrayList<Thema>();
+		ArrayList<Theme> themen = new ArrayList<Theme>();
 		File dir= new File(FILE);
 		
 		// Empty list, if directory is not available
@@ -79,7 +79,7 @@ public class QuizDataManager implements QuizDataInterface {
 			if (file.isFile()) {
 				try (FileInputStream fis = new FileInputStream(file);
 					ObjectInputStream ois = new ObjectInputStream(fis)) {
-							Thema th = (Thema) ois.readObject();
+							Theme th = (Theme) ois.readObject();
 							themen.add(th);
 					} catch (IOException | ClassNotFoundException e) {
 						System.err.println("Fehler beim lesen von Thema aus Datei: " + file.getName());
@@ -96,7 +96,7 @@ public class QuizDataManager implements QuizDataInterface {
 	 * @return an ArrayList with questions
 	 */
 	@Override
-	public ArrayList<Question> getQuestionFor(Thema th) {
+	public ArrayList<Question> getQuestionFor(Theme th) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -115,7 +115,7 @@ public class QuizDataManager implements QuizDataInterface {
 	 * Method to save a newly created theme into the folder and using the file name defined in the constant FILE
 	 */
 	@Override
-	public String saveTheme(Thema th) {
+	public String saveTheme(Theme th) {
 		FileOutputStream fileOutputStream;
 		try {
 			if (th.getId() == -1)
@@ -137,7 +137,7 @@ public class QuizDataManager implements QuizDataInterface {
 	 * Method to delete a theme. Also validates the existence of the theme to be deleted
 	 */
 	@Override
-	public String deleteTheme(Thema th) {
+	public String deleteTheme(Theme th) {
 		if (th == null) {
 			return "Thema nicht vorhanden";
 		}
@@ -167,7 +167,7 @@ public class QuizDataManager implements QuizDataInterface {
 	 */
 	@Override
 	public String saveQuestion(Question q) {
-		return saveTheme(q.getThema());
+		return saveTheme(q.getTheme());
 	}
 
 	/**

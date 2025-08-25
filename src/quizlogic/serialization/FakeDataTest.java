@@ -10,7 +10,7 @@ public class FakeDataTest implements Serializable {
 
 		FakeDataDeliverer fdd = new FakeDataDeliverer();
 
-		for (Thema th : fdd.themes) {
+		for (Theme th : fdd.themes) {
 			System.out.println(th.toString());
 		}
 	}

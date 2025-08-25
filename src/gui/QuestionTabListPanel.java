@@ -3,6 +3,7 @@ package gui;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 
 import javax.swing.DefaultListModel;
@@ -15,8 +16,10 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
 import layout.QPanel;
+import quizlogic.QuestionDTO;
+import quizlogic.ThemeDTO;
 import quizlogic.serialization.Question;
-import quizlogic.serialization.Thema;
+import quizlogic.serialization.Theme;
 
 /**
  * A panel that displays a list of questions grouped by theme. This component
@@ -29,29 +32,36 @@ import quizlogic.serialization.Thema;
 public class QuestionTabListPanel extends QPanel {
 
 	private JLabel themeHeader;
-	private JList<String> questionList;
-	private JComboBox<String> box;
-	private DefaultListModel<String> model;
-
-	private ArrayList<Thema> themeDataList;
-	private ArrayList<Question> questionDataList;
-	private int row;
-	
+	private JComboBox<ThemeDTO> box;
+	private JScrollPane scrollPane;
 	private JButton showThemeBtn;
+	private int row;
+
+	private DefaultListModel<QuestionDTO> questionModel;
+	private DefaultListModel<ThemeDTO> themeModel;
+
+//	private ArrayList<QuestionDTO> questionList;
+	private ArrayList<ThemeDTO> themeList;
+	private JList<QuestionDTO> questions;
+
+	QuestionTabDelegate delegate;
+//	private ArrayList<QuestionDTO> questionList;
+	private JList<ThemeDTO> jListThemeList;
 
 	/**
 	 * Constructs a new QuestionListPanel with the given theme and question data.
 	 * Initializes all UI components and populates them with data: - Fills the theme
 	 * combo box with theme titles - Fills the question list with question titles
+	 * 
+	 * @param arrayList
 	 *
-	 * @param themeDataList    the list of available themes; must not be {@code null}
-	 * @param questionDataList the list of questions to display; may be {@code null}
+	 * @param themeList    the list of available themes; must not be {@code null}
+	 * @param questionList the list of questions to display; may be {@code null}
 	 */
-	public QuestionTabListPanel(ArrayList<Thema> themeDataList, ArrayList<Question> questionDataList) {
+	public QuestionTabListPanel(ArrayList<ThemeDTO> themeList) {
 		super();
-		this.themeDataList = themeDataList;
-		this.questionDataList = questionDataList;
-
+		this.themeList = themeList;
+//		this.questionList = questionList;
 		init();
 	}
 
@@ -61,28 +71,27 @@ public class QuestionTabListPanel extends QPanel {
 	private void init() {
 		initComponents();
 		addComponents();
+		setupQuestionListListener();
+		setupThemeListListener();
 	}
 
 	/**
-	 * Initializes the UI components used in this panel.
-     * Creates:
-     * - A label for the header
-     * - A combo box for theme selection
-     * - A list model for dynamic question list updates
+	 * Initializes the UI components used in this panel. Creates: - A label for the
+	 * header - A combo box for theme selection - A list model for dynamic question
+	 * list updates
 	 */
 	private void initComponents() {
 		themeHeader = new JLabel();
-		box = new JComboBox<String>();
-		model = new DefaultListModel<>();
+		box = new JComboBox<ThemeDTO>();
 		showThemeBtn = new JButton();
+		questionModel = new DefaultListModel<>();
+		themeModel = new DefaultListModel<>();
 	}
 
 	/**
 	 * Adds all initialized components to the panel using {@link GridBagLayout}.
-     * Arranged in three rows:
-     * 1. Header label
-     * 2. Theme selection combo box
-     * 3. Scrollable question list
+	 * Arranged in three rows: 1. Header label 2. Theme selection combo box 3.
+	 * Scrollable question list
 	 */
 	private void addComponents() {
 		row = 0;
@@ -98,7 +107,7 @@ public class QuestionTabListPanel extends QPanel {
 		addComboBox();
 
 		// Row 3+ Questions (scroll pane)
-		addScrollPane();
+		addQuestionList();
 	}
 
 	/**
@@ -107,10 +116,10 @@ public class QuestionTabListPanel extends QPanel {
 	private void addHeader() {
 		themeHeader.setText("Fragen zum Thema");
 		addComponent(themeHeader, row, 0);
-		
+
 		showThemeBtn.setText("Thema anzeigen");
 		addComponent(showThemeBtn, row, 1);
-		showThemeBtn.setVisible(false);							// Button not visible, as long as no entry is selected
+		showThemeBtn.setVisible(false); // Button not visible, as long as no entry is selected
 		row++;
 	}
 
@@ -118,68 +127,111 @@ public class QuestionTabListPanel extends QPanel {
 	 * Fill the theme combobox with theme titles and adds it to the panel
 	 */
 	private void addComboBox() {
-		for (int i = 0; i < themeDataList.size(); i++) {
-			box.addItem(themeDataList.get(i).getTitle());
+		for (int i = 0; i < themeList.size(); i++) {
+			box.addItem(themeList.get(i));
 		}
+
 		addComponent(box, row, 0);
 		row++;
 	}
 
 	/**
-	 * Creates and adds a scrollable list of questions.
-     * Populates the list with question titles from {@code questionDataList}.
-     * Registers a {@link ListSelectionListener} to detect user selections.
+	 * Creates and adds a scroll pane
+	 * 
 	 */
-	private void addScrollPane() {
-		/**
-		 * Fill the data list
-		 */
+	private void addQuestionList() {
 		gbc.weighty = 1.0;
-		if (questionDataList != null) {
-			for (int i = 0; i < questionDataList.size(); i++) {
-				Question qd = questionDataList.get(i);
-				if (qd != null && qd.getTitle() != null) {
-					model.addElement(qd.getTitle());
-				}
-			}
+		gbc.gridheight = 3; // List height => X row high
+
+		if (questions == null) {
+			questions = new JList<>(questionModel);
+			scrollPane = new JScrollPane(questions);
+			int verticalPolicy = JScrollPane.VERTICAL_SCROLLBAR_ALWAYS;
+			scrollPane.setVerticalScrollBarPolicy(verticalPolicy);
+
+			addComponent(scrollPane, row, 0);
+			refreshQuestionList(themeList);
+
 		}
 
-		/**
-		 * Action listener to check which entry is selected
-		 * TODO: Check for function when data is available
-		 */
-		gbc.gridheight = 3; // List height => X row high
-		questionList = new JList<String>(model);
+		row += gbc.gridheight;
+		gbc.gridheight = 1; // Back to standard => 1 row high
+	}
 
-		questionList.addListSelectionListener(new ListSelectionListener() {
+	/**
+	 * 
+	 */
+	public void setupThemeListListener() {
+		box.addActionListener(e -> themeSelected(e));
+	}
+
+	private void themeSelected(ActionEvent e) {
+		ThemeDTO theme = (ThemeDTO) box.getSelectedItem();
+		ArrayList<ThemeDTO> updatedThemeList = new ArrayList<ThemeDTO>(1);
+		updatedThemeList.add(theme);
+		refreshQuestionList(updatedThemeList);
+	}
+
+	public void setupQuestionListListener() {
+		questions.addListSelectionListener(new ListSelectionListener() {
 
 			@Override
 			public void valueChanged(ListSelectionEvent e) {
 				if (!e.getValueIsAdjusting()) {
-					int selectedIndex = questionList.getSelectedIndex();
-					System.out.println(selectedIndex);
-					// fdd.q = question[selectedIndex];
-					String test = questionList.getName();
-					System.out.println(test);
-					
-					showThemeBtn.setVisible(true);				// Button visible as an entry is selected
+					QuestionDTO selectedQuestion = questions.getSelectedValue();
+//					System.out.println(selectedQuestion);
+					if (selectedQuestion != null) {
+//						System.out.println(selectedQuestion.getInfo());
+					}
+//					delegate.refreshQuestionPanel(selectedQuestion);
+//					showThemeBtn.setVisible(true); // Button visible as an entry is selected
 				}
 
 			}
 		});
+	}
 
-		/**
-		 * Add scroll pane with the list
-		 */
-		JScrollPane scrollPane = new JScrollPane(questionList);
-		// ListSelectionModel = questionList.getSelectionMode();
+	/**
+	 * Clears the model (question list) then adds the question of the DTO elements
+	 * of the updated question list to the model.
+	 * 
+	 * @param updatedQuestionList
+	 */
+	public void refreshQuestionList(ArrayList<ThemeDTO> updatedThemeList) {
+		questionModel.clear();
 
-		int verticalPolicy = JScrollPane.VERTICAL_SCROLLBAR_ALWAYS;
-		scrollPane.setVerticalScrollBarPolicy(verticalPolicy);
+		for (ThemeDTO theme : updatedThemeList) {
+			ArrayList<QuestionDTO> updatedQuestionList = new ArrayList<QuestionDTO>();
+			updatedQuestionList.add(theme.getQuestionDTO());
 
-		addComponent(scrollPane, row, 0);
+			for (QuestionDTO question : updatedQuestionList) {
+				if (theme.getId() == question.getThemeID()) {
+					questionModel.addElement(question);
+//					System.out.println("Theme id: " + theme.getId());
+//					System.out.println("Question theme id: " + question.getThemeID());
+//					System.out.println("Question: " + question);
+//					System.out.println("Question List refreshed!");
+				}
+			}
+		}
+	}
 
-		gbc.gridheight = 1; 									// Back to standard => 1 row high
+	/**
+	 * Getter for the question model
+	 * 
+	 * @return default list model
+	 */
+	public DefaultListModel<QuestionDTO> getQuestionModel() {
+		return questionModel;
+	}
+
+	/**
+	 * Getter for the theme model
+	 * 
+	 * @return default list model
+	 */
+	public DefaultListModel<ThemeDTO> getThemeModel() {
+		return themeModel;
 	}
 
 }
