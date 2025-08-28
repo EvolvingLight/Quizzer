@@ -27,7 +27,7 @@ public class BLManager {
 	 * Loads the theme DTO's from the database using the DB manager
 	 * @return the updated DTO list
 	 */
-	public ArrayList<ThemeDTO> loadThemeList() {
+	public ArrayList<ThemeDTO> loadThemeDTOList() {
 		ArrayList<ThemeDTO> updatedList = beaver.loadAllThemesFromDB();
 		return updatedList;
 	}

@@ -96,7 +96,7 @@ public class QuizTabMainPanel extends QPanel implements ButtonPanelDelegate {
 		bottomPanel = new QPanel();
 
 		quizTabQuestionPanel = new QuizTabQuestionPanel(fdd.getRandomQuestion());
-		quizTabQuestionListPanel = new QuizTabQuestionListPanel(fdd.getAllThemes(), fdd.getQuestionFor(null));
+		quizTabQuestionListPanel = new QuizTabQuestionListPanel();
 		quizTabButtonPanel = new QuizTabButtonPanel(this);
 	}
 

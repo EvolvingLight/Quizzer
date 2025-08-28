@@ -1,8 +1,5 @@
 package gui;
 
-import java.util.ArrayList;
-
-import quizlogic.BLManager;
 import quizlogic.ThemeDTO;
 
 /**
@@ -14,27 +11,21 @@ public class GUIManager {
 	private ThemeTabThemeListPanel themeListPanel;
 	private ThemeTabThemePanel themePanel;
 
-	private BLManager mngBL = new BLManager();
-
-	// ------ Theme Tab Theme List Panel ------ //
-	/**
-	 * Uses the method inside the ThemeTabThemeListPanel to refresh the theme list
-	 * 
-	 * @param updatedThemeList
-	 */
-	public void refreshThemeList(ArrayList<ThemeDTO> updatedThemeList) {
-		ArrayList<ThemeDTO> themes = mngBL.loadThemeList();
-
-		themeListPanel.refreshThemeList(themes);
-	}
-
 	// ------ Theme Tab Theme Panel ------ //
+	/**
+	 * Returns the selected theme inside the theme list
+	 * @return selected theme
+	 */
 	public ThemeDTO getSelectedTheme() {
 		ThemeDTO selectedTheme = themeListPanel.themes.getSelectedValue();
 //		System.out.println("getSelectedThemeTitle() => " + selectedTheme.getTitle());
 		return selectedTheme;
 	}
 
+	/**
+	 * Refreshes the theme title and theme text inside the theme panel
+	 * @param selectedTheme
+	 */
 	public void refreshThemePanel(ThemeDTO selectedTheme) {
 		
 		if (selectedTheme != null) {

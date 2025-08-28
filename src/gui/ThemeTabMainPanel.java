@@ -2,8 +2,10 @@ package gui;
 
 import java.awt.Color;
 import java.awt.GridBagLayout;
+import java.util.ArrayList;
 
 import javax.swing.BorderFactory;
+import javax.swing.JOptionPane;
 
 import layout.QPanel;
 import persistence.serialization.QuizDataManager;
@@ -156,15 +158,15 @@ public class ThemeTabMainPanel extends QPanel implements ButtonPanelDelegate, Th
 
 		// Panel two => questionTabquestionListPanel
 		rightPanel.add(themeTabThemeListPanel);
-		mngGUI.refreshThemeList(null);
+		themeTabThemeListPanel.refreshThemeList();
 
 		// Panel three => quesitonTabButtonPanel
 		bottomPanel.add(themeTabButtonPanel);
 	}
 
 	/**
-	 * Handles the event when the first button is clicked. TODO: Update to perform a
-	 * specific action (e.g., edit question, navigate, etc.).
+	 * Handles the event when the first button is clicked. 
+	 * In this case to delete a DTO from the database
 	 */
 	@Override
 	public void firstBtnWasClicked() {
@@ -172,8 +174,8 @@ public class ThemeTabMainPanel extends QPanel implements ButtonPanelDelegate, Th
 	}
 
 	/**
-	 * Handles the event when the second button is clicked In this case to save the
-	 * DTO to the database
+	 * Handles the event when the second button is clicked.
+	 *  In this case to save the DTO to the database
 	 */
 	@Override
 	public void secondBtnWasClicked() {
@@ -195,15 +197,14 @@ public class ThemeTabMainPanel extends QPanel implements ButtonPanelDelegate, Th
 	 */
 	private void deleteTheme() {
 		ThemeDTO selectedTheme = mngGUI.getSelectedTheme();
-		
+
 		if (selectedTheme != null) {
 			System.out.println("deleted theme: " + selectedTheme.getId());
 			mngBL.deleteTheme(selectedTheme);
 			themeTabThemePanel.msgLabel.setText("Thema erfolgreich gelöscht");
 
 			// Refresh theme list
-			mngBL.loadThemeList();
-			mngGUI.refreshThemeList(null);
+			themeTabThemeListPanel.refreshThemeList();
 		} else {
 			themeTabThemePanel.msgLabel.setText("Bitte Thema auswählen!");
 		}
@@ -216,17 +217,49 @@ public class ThemeTabMainPanel extends QPanel implements ButtonPanelDelegate, Th
 	public void transferToBL() {
 		themeTabThemePanel.msgLabel.setText("");
 
+		// Check whether the input fields are filled
+		if (themeTabThemePanel.themeTitleTextField.getText().isEmpty()
+				&& themeTabThemePanel.themeTextArea.getText().isEmpty()) {
+			themeTabThemePanel.msgLabel.setText("Bitte Titel und Informationen zum Thema eingeben");
+			return;
+		} else if (themeTabThemePanel.themeTitleTextField.getText().isEmpty()) {
+			themeTabThemePanel.msgLabel.setText("Bitte geben Sie mindestens den Titel des Themas ein");
+			return;
+		} else if (themeTabThemePanel.themeTextArea.getText().isEmpty()) {
+
+			
+			// Button text
+	        Object[] options = {"OK", "Abbrechen"};
+	        
+	        int result = JOptionPane.showOptionDialog(
+	            null,     						                      	// Parent component (null = centered)
+	            "Möchten Sie wirklich nur den Titel speichern?",      	// Message
+	            "",                  									// Title
+	            JOptionPane.YES_NO_OPTION,      						// Option type (defines icon)
+	            JOptionPane.QUESTION_MESSAGE,   						// Type of message
+	            null,                           						// Icon (null => default)
+	            options,                        						// Button text, defined above
+	            options[1]                      						// Default choice (here: "Cancel")
+	        );
+
+	        if (result == 0) {
+	            System.out.println("Benutzer hat 'Ja' gewählt");
+	        } else if (result == 1) {
+	            System.out.println("Benutzer hat 'Nein' gewählt");
+	            themeTabThemePanel.msgLabel.setText("Bitte geben Sie Informationen zum Thema ein");
+				return;
+	        } else {
+	            System.out.println("Dialog geschlossen ohne Auswahl");
+	            themeTabThemePanel.msgLabel.setText("Bitte geben Sie Informationen zum Thema ein");
+				return;
+	        }
+		}
+
 		// Creation of DTO with title and text
 		ThemeDTO dto = new ThemeDTO();
 		dto.setTitle(themeTabThemePanel.themeTitleTextField.getText());
 		dto.setText(themeTabThemePanel.themeTextArea.getText());
 		System.out.println("DTO vorher: " + dto.getInfo());
-
-		// Check whether the DTO title is empty
-		if (dto.getTitle().isEmpty()) {
-			themeTabThemePanel.msgLabel.setText("Titel darf nicht leer sein.");
-			return;
-		}
 
 		// Not asked by the customer
 //		ArrayList<ThemeDTO> existingThemes = mngBL.loadThemeList();
@@ -242,6 +275,7 @@ public class ThemeTabMainPanel extends QPanel implements ButtonPanelDelegate, Th
 //		
 		// Saves only if the theme does not exist
 //		if (!titleExists) {
+
 		try {
 			mngBL.saveTheme(dto);
 			themeTabThemePanel.msgLabel.setText("Thema gespeichert.");
@@ -253,28 +287,28 @@ public class ThemeTabMainPanel extends QPanel implements ButtonPanelDelegate, Th
 //			themeTabThemePanel.msgLabel.setText("Fehler: Ein Thema mit diesem Titel existiert bereits.");
 //		}
 
-		mngBL.loadThemeList();
-		mngGUI.refreshThemeList(null);
+		mngBL.loadThemeDTOList();
+		themeTabThemeListPanel.refreshThemeList();
 	}
 
 	/**
 	 * Calls the BL manager to load the theme data from the database Including theme
 	 * id, title and text
 	 */
-	public void transferFromDB() {
+	public ArrayList<ThemeDTO> loadThemeDTOFromDB() {
 		themeTabThemePanel.msgLabel.setText("");
-		mngBL.loadThemeList();
+		return mngBL.loadThemeDTOList();
 	}
 
 	/**
-	 * 
+	 * Clears the message label
 	 */
 	public void clearMsgLabel() {
 		themeTabThemePanel.msgLabel.setText("");
 	}
 
 	/**
-	 * 
+	 * Refreshes the theme panel
 	 */
 	@Override
 	public void refreshThemePanel(ThemeDTO selectedTheme) {

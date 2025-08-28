@@ -1,0 +1,16 @@
+CREATE DATABASE IF NOT EXISTS quizzer;
+
+USE quizzer;
+
+CREATE TABLE themes (
+	id INT auto_increment, NOT NULL
+	themeTitle VARCHAR NOT NULL
+);
+
+CREATE TABLE questions (
+	
+);
+
+CREATE TABLE answers (
+
+);

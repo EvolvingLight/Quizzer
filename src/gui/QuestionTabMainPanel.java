@@ -202,7 +202,7 @@ public class QuestionTabMainPanel extends QPanel implements ButtonPanelDelegate,
 	}
 
 	public ArrayList<ThemeDTO> loadAllThemes() {
-		ArrayList<ThemeDTO> themeList = mngBL.loadThemeList();
+		ArrayList<ThemeDTO> themeList = mngBL.loadThemeDTOList();
 		return themeList;
 	}
 	

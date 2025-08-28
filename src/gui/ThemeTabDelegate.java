@@ -1,13 +1,15 @@
 package gui;
 
+import java.util.ArrayList;
+
 import quizlogic.ThemeDTO;
 
 public interface ThemeTabDelegate {
 
 	/**
-	 * Übergabe des selektierten Objektes (selected Item) 
-	 * vom Panel mit der JList zu dem Panel, 
-	 * auf dem alles weitere mit dem selektierten Objekt gemacht wird
+	 * Transfer of the selected object (selected Item) 
+	 * from list panel to theme panel, where the selected item 
+	 * is used for other functions
 	 * @param selectedTheme
 	 */
 	public void refreshThemePanel(ThemeDTO selectedTheme);
@@ -16,4 +18,10 @@ public interface ThemeTabDelegate {
 	 * Transfer between ThemeListPanel and ThemePanel
 	 */
 	public void clearMsgLabel();
+	
+	/**
+	 * Method which returns an array list with the themeDTO class
+	 * @return 
+	 */
+	public ArrayList<ThemeDTO> loadThemeDTOFromDB();
 }

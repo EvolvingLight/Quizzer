@@ -49,6 +49,10 @@ public class DBManager {
 		}
 	}
 
+	/**
+	 * Uses prepared statement and them id to delete a theme from the database
+	 * @param th => ThemeDTO
+	 */
 	public void deleteTheme(ThemeDTO th) {
 		int id = th.getId();
 		PreparedStatement pstmt;
